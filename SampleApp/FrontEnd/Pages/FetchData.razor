@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using FrontEnd.Data
 @inject WeatherForecastClient ForecastClient
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -26,7 +27,7 @@ else
             @foreach (var forecast in forecasts)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@GetFormattedDate(forecast.Date)</td>
                     <td>@forecast.TemperatureC</td>
                     <td>@forecast.Summary</td>
                 </tr>
@@ -37,9 +38,32 @@ else
 
 @code {
     private WeatherForecast[]? forecasts;
+    private Dictionary<DateOnly, string> formattedDates = new();
 
     protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastClient.GetForecastAsync(DateTime.Now);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && forecasts != null)
+        {
+            foreach (var forecast in forecasts)
+            {
+                var formattedDate = await JSRuntime.InvokeAsync<string>(
+                    "dateFormatter.formatDate",
+                    forecast.Date.Year,
+                    forecast.Date.Month,
+                    forecast.Date.Day);
+                formattedDates[forecast.Date] = formattedDate;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private string GetFormattedDate(DateOnly date)
+    {
+        return formattedDates.TryGetValue(date, out var formatted) ? formatted : date.ToString("yyyy-MM-dd");
     }
 }

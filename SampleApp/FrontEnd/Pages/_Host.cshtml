@@ -16,7 +16,7 @@
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 <body>
-    <component type="typeof(App)" render-mode="ServerPrerendered" />
+    <component type="typeof(App)" render-mode="Server" />
 
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
@@ -30,5 +30,6 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+    <script src="js/dateFormatter.js"></script>
 </body>
 </html>
