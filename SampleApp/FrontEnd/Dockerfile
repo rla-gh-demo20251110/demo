@@ -5,7 +5,7 @@ EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
 USER app
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG configuration=Release
 WORKDIR /src
 COPY ["SampleApp/FrontEnd/FrontEnd.csproj", "SampleApp/FrontEnd/"]
